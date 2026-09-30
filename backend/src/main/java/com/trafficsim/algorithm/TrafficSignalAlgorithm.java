@@ -16,6 +16,18 @@ public interface TrafficSignalAlgorithm {
         SignalPhase activePhase,
         double cycleElapsedSeconds,
         double totalCycleSeconds,
-        Map<Direction, TrafficSignalState> signals
-    ) {}
+        Map<Direction, TrafficSignalState> signals,
+        String activeAlgorithm,
+        String activeGreenDirection,
+        double currentGreenDuration
+    ) {
+        public AlgorithmSignalResult(
+            SignalPhase activePhase,
+            double cycleElapsedSeconds,
+            double totalCycleSeconds,
+            Map<Direction, TrafficSignalState> signals
+        ) {
+            this(activePhase, cycleElapsedSeconds, totalCycleSeconds, signals, "FIXED_TIME", "", 0.0);
+        }
+    }
 }

@@ -10,15 +10,24 @@ export interface TrafficSignalState {
   remainingSeconds: number;
 }
 
+export type SignalMode = 'FIXED_TIME' | 'DENSITY_BASED';
+
 export interface SignalPhaseInfo {
   activePhase: string;
   cycleElapsedSeconds: number;
   totalCycleSeconds: number;
   signals: Record<Direction, TrafficSignalState>;
+  activeAlgorithm?: string;
+  activeGreenDirection?: string;
+  currentGreenDuration?: number;
+  dominantDirection?: Direction;
 }
+
+export type VehicleType = 'car' | 'bus' | 'truck' | 'bike';
 
 export interface Vehicle {
   id: string;
+  type?: VehicleType;
   direction: Direction;
   lane: number;
   x: number;
@@ -43,6 +52,8 @@ export interface SimulationConfig {
   spawnRatePerMinute: number;
   speedMultiplier: number;
   activeAlgorithm: string;
+  minGreenDuration?: number;
+  maxGreenDuration?: number;
 }
 
 export interface LiveStats {

@@ -1,8 +1,10 @@
 package com.trafficsim.service;
 
+import com.trafficsim.algorithm.DensityBasedSignalAlgorithm;
 import com.trafficsim.algorithm.FixedTimeSignalAlgorithm;
 import com.trafficsim.algorithm.TrafficSignalAlgorithm;
 import com.trafficsim.algorithm.TrafficSignalAlgorithm.AlgorithmSignalResult;
+import com.trafficsim.model.Direction;
 import com.trafficsim.model.IntersectionConfig;
 import com.trafficsim.model.SimulationControlRequest;
 import com.trafficsim.repository.SimulationRecordRepository;
@@ -21,10 +23,17 @@ public class SimulationService {
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private final AtomicReference<Double> currentSpeed = new AtomicReference<>(1.0);
     private final SimulationRecordRepository repository;
+    private final DensityBasedSignalAlgorithm densityBasedAlgorithm;
 
-    public SimulationService(FixedTimeSignalAlgorithm fixedTimeAlgorithm, SimulationRecordRepository repository) {
+    public SimulationService(
+            FixedTimeSignalAlgorithm fixedTimeAlgorithm,
+            DensityBasedSignalAlgorithm densityBasedAlgorithm,
+            SimulationRecordRepository repository
+    ) {
         this.repository = repository;
+        this.densityBasedAlgorithm = densityBasedAlgorithm;
         this.algorithms.put(fixedTimeAlgorithm.getName(), fixedTimeAlgorithm);
+        this.algorithms.put(densityBasedAlgorithm.getName(), densityBasedAlgorithm);
     }
 
     public IntersectionConfig getConfig() {
@@ -59,6 +68,7 @@ public class SimulationService {
             case "RESET" -> {
                 isRunning.set(false);
                 repository.clear();
+                densityBasedAlgorithm.reset();
             }
             case "SET_SPEED" -> {
                 if (request.speedMultiplier() != null && request.speedMultiplier() > 0) {
@@ -76,6 +86,16 @@ public class SimulationService {
             "isRunning", isRunning.get(),
             "speedMultiplier", currentSpeed.get()
         );
+    }
+
+    public void updateWaitingCounts(Map<Direction, Integer> waitingCounts) {
+        if (waitingCounts != null) {
+            densityBasedAlgorithm.updateWaitingCounts(waitingCounts);
+        }
+    }
+
+    public DensityBasedSignalAlgorithm getDensityBasedAlgorithm() {
+        return densityBasedAlgorithm;
     }
 
     public boolean isRunning() {

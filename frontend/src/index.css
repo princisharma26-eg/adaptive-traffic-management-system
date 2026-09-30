@@ -2,18 +2,25 @@
 
 @layer base {
   :root {
-    --bg-primary: #090d16;
-    --bg-secondary: #0f172a;
-    --bg-surface: #1e293b;
-    --border-subtle: #334155;
-    --text-primary: #f8fafc;
-    --text-muted: #94a3b8;
+    --bg-main: #061B1B;
+    --bg-header: #092526;
+    --bg-sidebar: #092526;
+    --bg-card: #0D3031;
+    --bg-card-elevated: #123A3A;
+    --accent-primary: #10D6A0;
+    --accent-secondary: #12BFA5;
+    --text-primary: #E8F5F2;
+    --text-secondary: #8BAFAC;
+    --border-color: #1B5655;
+    --signal-green: #10D98B;
+    --signal-yellow: #F5B83D;
+    --signal-red: #EF4444;
   }
 
   body {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #061B1B;
+    color: #E8F5F2;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
@@ -21,15 +28,20 @@
   }
 }
 
-/* Custom glowing pulse for active signals */
+/* Custom subtle glowing pulse for active signals */
 @keyframes signalGlowGreen {
-  0%, 100% { box-shadow: 0 0 12px 2px rgba(34, 197, 94, 0.6); }
-  50% { box-shadow: 0 0 20px 6px rgba(34, 197, 94, 0.9); }
+  0%, 100% { box-shadow: 0 0 6px 1px rgba(16, 217, 139, 0.4); }
+  50% { box-shadow: 0 0 12px 3px rgba(16, 217, 139, 0.75); }
 }
 
 @keyframes signalGlowRed {
-  0%, 100% { box-shadow: 0 0 12px 2px rgba(239, 68, 68, 0.6); }
-  50% { box-shadow: 0 0 20px 6px rgba(239, 68, 68, 0.9); }
+  0%, 100% { box-shadow: 0 0 6px 1px rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 12px 3px rgba(239, 68, 68, 0.75); }
+}
+
+@keyframes signalGlowYellow {
+  0%, 100% { box-shadow: 0 0 6px 1px rgba(245, 184, 61, 0.4); }
+  50% { box-shadow: 0 0 12px 3px rgba(245, 184, 61, 0.75); }
 }
 
 .glow-green {
@@ -40,21 +52,25 @@
   animation: signalGlowRed 2s infinite ease-in-out;
 }
 
-/* Sleek dark scrollbar */
+.glow-yellow {
+  animation: signalGlowYellow 2s infinite ease-in-out;
+}
+
+/* Sleek Dark Teal scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #061B1B;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #1B5655;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #10D6A0;
 }

@@ -22,6 +22,23 @@ export class SimulationApiClient {
   }
 
   /**
+   * Updates intersection configuration on backend (mode, green limits, rates)
+   */
+  public static async updateConfig(config: SimulationConfig): Promise<SimulationConfig | null> {
+    try {
+      const response = await fetch(`${BASE_URL}/simulation/config`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(config),
+      });
+      if (!response.ok) return null;
+      return await response.json();
+    } catch {
+      return null;
+    }
+  }
+
+  /**
    * Sends control commands (START, PAUSE, RESET, SET_SPEED)
    */
   public static async sendControl(

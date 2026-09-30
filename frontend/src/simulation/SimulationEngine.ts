@@ -62,6 +62,7 @@ export class SimulationEngine {
     this.totalSpawned = 0;
     this.totalPassed = 0;
     this.passedByDirection = { NORTH: 0, SOUTH: 0, EAST: 0, WEST: 0 };
+    this.signalModel.reset();
     this.currentSignals = this.signalModel.computeSignals(0);
     this.scheduleNextSpawns(0);
   }
@@ -84,6 +85,28 @@ export class SimulationEngine {
 
   public getSignals(): Record<Direction, TrafficSignalState> {
     return this.currentSignals;
+  }
+
+  public getSignalModel(): TrafficSignalModel {
+    return this.signalModel;
+  }
+
+  public getWaitingCounts(): Record<Direction, number> {
+    const counts: Record<Direction, number> = { NORTH: 0, SOUTH: 0, EAST: 0, WEST: 0 };
+    for (const v of this.vehicles) {
+      if (v.state === 'WAITING') {
+        counts[v.direction]++;
+      }
+    }
+    return counts;
+  }
+
+  public surgeTraffic(direction: Direction): void {
+    if (this.isEntranceClear(direction)) {
+      const car = VehicleFactory.createVehicle(direction, this.simulationTime);
+      this.vehicles.push(car);
+      this.totalSpawned++;
+    }
   }
 
   /**
@@ -109,8 +132,9 @@ export class SimulationEngine {
 
     this.simulationTime += effectiveDt;
 
-    // 1. Update signals
-    this.currentSignals = this.signalModel.computeSignals(this.simulationTime);
+    // 1. Update signals with current waiting density
+    const waitingCounts = this.getWaitingCounts();
+    this.currentSignals = this.signalModel.computeSignals(this.simulationTime, waitingCounts);
 
     // 2. Vehicle spawning logic per approach
     this.handleSpawning();

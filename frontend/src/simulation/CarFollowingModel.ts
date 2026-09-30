@@ -79,16 +79,17 @@ export class CarFollowingModel {
    * Returns bumper-to-bumper distance between following vehicle and lead vehicle
    */
   public static getBumperToBumperGap(follower: Vehicle, leader: Vehicle): number {
-    const halfLen = VEHICLE_LENGTH / 2;
+    const followerHalf = (follower.length || VEHICLE_LENGTH) / 2;
+    const leaderHalf = (leader.length || VEHICLE_LENGTH) / 2;
     switch (follower.direction) {
       case 'NORTH': // Moving downwards (+y)
-        return (leader.y - halfLen) - (follower.y + halfLen);
+        return (leader.y - leaderHalf) - (follower.y + followerHalf);
       case 'SOUTH': // Moving upwards (-y)
-        return (follower.y - halfLen) - (leader.y + halfLen);
+        return (follower.y - followerHalf) - (leader.y + leaderHalf);
       case 'EAST': // Moving leftwards (-x)
-        return (follower.x - halfLen) - (leader.x + halfLen);
+        return (follower.x - followerHalf) - (leader.x + leaderHalf);
       case 'WEST': // Moving rightwards (+x)
-        return (leader.x - halfLen) - (follower.x + halfLen);
+        return (leader.x - leaderHalf) - (follower.x + followerHalf);
     }
   }
 
@@ -96,7 +97,7 @@ export class CarFollowingModel {
    * Returns distance from vehicle front bumper to the directional stop line
    */
   public static getDistanceToStopLine(vehicle: Vehicle): number {
-    const halfLen = VEHICLE_LENGTH / 2;
+    const halfLen = (vehicle.length || VEHICLE_LENGTH) / 2;
     const stopCoord = STOP_LINES[vehicle.direction];
 
     switch (vehicle.direction) {

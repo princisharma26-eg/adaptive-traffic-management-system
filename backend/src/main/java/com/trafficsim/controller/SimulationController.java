@@ -38,7 +38,19 @@ public class SimulationController {
 
     @GetMapping("/signals")
     public ResponseEntity<AlgorithmSignalResult> getSignalStates(
-            @RequestParam(name = "elapsedSeconds", defaultValue = "0.0") double elapsedSeconds) {
+            @RequestParam(name = "elapsedSeconds", defaultValue = "0.0") double elapsedSeconds,
+            @RequestParam(name = "northWaiting", required = false) Integer northWaiting,
+            @RequestParam(name = "southWaiting", required = false) Integer southWaiting,
+            @RequestParam(name = "eastWaiting", required = false) Integer eastWaiting,
+            @RequestParam(name = "westWaiting", required = false) Integer westWaiting) {
+        if (northWaiting != null || southWaiting != null || eastWaiting != null || westWaiting != null) {
+            java.util.Map<com.trafficsim.model.Direction, Integer> map = new java.util.EnumMap<>(com.trafficsim.model.Direction.class);
+            if (northWaiting != null) map.put(com.trafficsim.model.Direction.NORTH, northWaiting);
+            if (southWaiting != null) map.put(com.trafficsim.model.Direction.SOUTH, southWaiting);
+            if (eastWaiting != null) map.put(com.trafficsim.model.Direction.EAST, eastWaiting);
+            if (westWaiting != null) map.put(com.trafficsim.model.Direction.WEST, westWaiting);
+            simulationService.updateWaitingCounts(map);
+        }
         return ResponseEntity.ok(simulationService.getSignalStates(elapsedSeconds));
     }
 
@@ -49,6 +61,9 @@ public class SimulationController {
 
     @PostMapping("/telemetry")
     public ResponseEntity<SimulationMetrics> receiveTelemetry(@RequestBody TelemetrySnapshot snapshot) {
+        if (snapshot != null && snapshot.waitingByDirection() != null) {
+            simulationService.updateWaitingCounts(snapshot.waitingByDirection());
+        }
         SimulationMetrics calculatedMetrics = analyticsService.recordTelemetry(snapshot);
         return ResponseEntity.ok(calculatedMetrics);
     }

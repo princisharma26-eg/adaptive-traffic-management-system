@@ -1,0 +1,10 @@
+{
+  "name": "adaptive-traffic-management-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Adaptive Traffic Management System - Full Stack",
+  "scripts": {
+    "start": "./run.sh",
+    "dev": "./run.sh"
+  }
+}

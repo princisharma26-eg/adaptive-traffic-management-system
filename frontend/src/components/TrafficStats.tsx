@@ -1,5 +1,6 @@
+import React from 'react';
 import type { LiveStats } from '../types/traffic';
-import { Car, Clock, Gauge, Hourglass, TrendingUp } from 'lucide-react';
+import { Car, Clock, Gauge, Hourglass, Scale, Timer, TrendingUp } from 'lucide-react';
 
 interface TrafficStatsProps {
   stats: LiveStats;
@@ -13,96 +14,109 @@ export const TrafficStats: React.FC<TrafficStatsProps> = ({ stats }) => {
   };
 
   return (
-    <div className="bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-800 p-5 shadow-xl flex flex-col gap-4">
-      <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+    <div className="bg-[#0D3031] rounded-xl border border-[#1B5655] p-4 shadow-sm flex flex-col gap-3">
+      {/* Header: LIVE PERFORMANCE METRICS | REAL-TIME TELEMETRY */}
+      <div className="flex items-center justify-between border-b border-[#1B5655]/80 pb-2.5">
         <div className="flex items-center gap-2">
-          <Gauge className="w-4 h-4 text-emerald-400" />
-          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-200 font-mono">
+          <Gauge className="w-4 h-4 text-[#10D6A0]" />
+          <h2 className="text-xs md:text-sm font-bold uppercase tracking-wider text-[#E8F5F2] font-mono">
             Live Performance Metrics
           </h2>
         </div>
-        <span className="text-[10px] text-emerald-400 font-mono bg-emerald-950/40 border border-emerald-800/50 px-2 py-0.5 rounded">
-          REAL-TIME TELEMETRY
+        <span className="text-[10px] text-[#10D6A0] font-mono bg-[#092526] border border-[#1B5655] px-2 py-0.5 rounded font-semibold uppercase">
+          Real-Time Telemetry
         </span>
       </div>
 
-      {/* Main Metric Cards Grid */}
-      <div className="grid grid-cols-2 gap-3">
-        {/* Total Vehicles Generated */}
-        <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-slate-400 mb-1">
+      {/* Main Metric Cards Grid (Total Spawned, Currently Waiting, Avg. Travel Time, Vehicles Cleared) */}
+      <div className="grid grid-cols-2 gap-2.5 font-mono">
+        {/* Total Spawned */}
+        <div className="p-3 rounded-lg bg-[#092526] border border-[#1B5655] flex flex-col justify-between">
+          <div className="flex items-center justify-between text-[#8BAFAC] mb-1">
             <span className="text-xs font-medium">Total Spawned</span>
-            <Car className="w-4 h-4 text-blue-400" />
+            <Car className="w-3.5 h-3.5 text-[#10D6A0]" />
           </div>
-          <div className="text-2xl font-bold font-mono text-white">
+          <div className="text-xl md:text-2xl font-bold text-[#E8F5F2]">
             {stats.totalSpawned}
           </div>
-          <span className="text-[10px] text-slate-400 mt-1">Vehicles initiated</span>
+          <span className="text-[10px] text-[#8BAFAC] mt-0.5">Vehicles initiated</span>
         </div>
 
-        {/* Vehicles Currently Waiting */}
+        {/* Currently Waiting */}
         <div
-          className={`p-3.5 rounded-xl border flex flex-col justify-between transition-colors ${
+          className={`p-3 rounded-lg border flex flex-col justify-between transition-colors ${
             stats.currentWaiting > 5
-              ? 'bg-amber-950/20 border-amber-600/40'
-              : 'bg-slate-950/60 border-slate-800/80'
+              ? 'bg-[#092526] border-[#F5B83D]'
+              : 'bg-[#092526] border-[#1B5655]'
           }`}
         >
-          <div className="flex items-center justify-between text-slate-400 mb-1">
+          <div className="flex items-center justify-between text-[#8BAFAC] mb-1">
             <span className="text-xs font-medium">Currently Waiting</span>
             <Hourglass
-              className={`w-4 h-4 ${
-                stats.currentWaiting > 5 ? 'text-amber-400 animate-pulse' : 'text-slate-400'
+              className={`w-3.5 h-3.5 ${
+                stats.currentWaiting > 5 ? 'text-[#F5B83D] animate-pulse' : 'text-[#8BAFAC]'
               }`}
             />
           </div>
           <div
-            className={`text-2xl font-bold font-mono ${
-              stats.currentWaiting > 5 ? 'text-amber-300' : 'text-white'
+            className={`text-xl md:text-2xl font-bold ${
+              stats.currentWaiting > 5 ? 'text-[#F5B83D]' : 'text-[#E8F5F2]'
             }`}
           >
             {stats.currentWaiting}
           </div>
-          <span className="text-[10px] text-slate-400 mt-1">In queue at stop line</span>
+          <span className="text-[10px] text-[#8BAFAC] mt-0.5">In queue at stop lines</span>
         </div>
 
-        {/* Vehicles Passed */}
-        <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-slate-400 mb-1">
-            <span className="text-xs font-medium">Vehicles Cleared</span>
-            <TrendingUp className="w-4 h-4 text-emerald-400" />
+        {/* Avg. Travel Time (Average Queue/Vehicle Wait Time) */}
+        <div className="p-3 rounded-lg bg-[#092526] border border-[#1B5655] flex flex-col justify-between">
+          <div className="flex items-center justify-between text-[#8BAFAC] mb-1">
+            <span className="text-xs font-medium">Avg. Travel Time</span>
+            <Timer className="w-3.5 h-3.5 text-[#12BFA5]" />
           </div>
-          <div className="text-2xl font-bold font-mono text-emerald-400">
+          <div className="text-xl md:text-2xl font-bold text-[#10D6A0]">
+            {stats.averageWaitTimeSeconds.toFixed(1)}s
+          </div>
+          <span className="text-[10px] text-[#8BAFAC] mt-0.5">Average delay/wait</span>
+        </div>
+
+        {/* Vehicles Cleared */}
+        <div className="p-3 rounded-lg bg-[#092526] border border-[#1B5655] flex flex-col justify-between">
+          <div className="flex items-center justify-between text-[#8BAFAC] mb-1">
+            <span className="text-xs font-medium">Vehicles Cleared</span>
+            <TrendingUp className="w-3.5 h-3.5 text-[#10D98B]" />
+          </div>
+          <div className="text-xl md:text-2xl font-bold text-[#10D98B]">
             {stats.totalPassed}
           </div>
-          <span className="text-[10px] text-slate-400 mt-1">Throughput: {stats.throughputPerMinute} veh/min</span>
-        </div>
-
-        {/* Simulation Time */}
-        <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-slate-400 mb-1">
-            <span className="text-xs font-medium">Simulation Clock</span>
-            <Clock className="w-4 h-4 text-purple-400" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-white">
-            {formatTime(stats.simulationTimeSeconds)}
-          </div>
-          <span className="text-[10px] text-slate-400 mt-1">Elapsed runtime</span>
+          <span className="text-[10px] text-[#8BAFAC] mt-0.5">
+            Rate: {stats.throughputPerMinute} veh/min
+          </span>
         </div>
       </div>
 
-      {/* Secondary Metrics Bar */}
-      <div className="p-3.5 rounded-xl bg-slate-950/40 border border-slate-800/60 grid grid-cols-2 gap-4 text-xs font-mono">
+      {/* Secondary Metrics Bar (Simulation Clock, Max Wait, Fairness Index) */}
+      <div className="p-2.5 rounded-lg bg-[#092526] border border-[#1B5655] grid grid-cols-3 gap-2 text-xs font-mono">
         <div>
-          <span className="text-slate-400 block text-[11px]">Avg Vehicle Wait</span>
-          <span className="text-slate-200 font-semibold text-sm">
-            {stats.averageWaitTimeSeconds.toFixed(1)}s
+          <span className="text-[#8BAFAC] block text-[9px] uppercase">Clock</span>
+          <span className="text-[#E8F5F2] font-bold text-xs flex items-center gap-1">
+            <Clock className="w-3 h-3 text-[#10D6A0]" />
+            {formatTime(stats.simulationTimeSeconds)}
           </span>
         </div>
         <div>
-          <span className="text-slate-400 block text-[11px]">Max Observed Wait</span>
-          <span className="text-slate-200 font-semibold text-sm">
+          <span className="text-[#8BAFAC] block text-[9px] uppercase">Max Wait</span>
+          <span className="text-[#E8F5F2] font-bold text-xs">
             {stats.maxWaitTimeSeconds.toFixed(1)}s
+          </span>
+        </div>
+        <div>
+          <span className="text-[#8BAFAC] block text-[9px] uppercase flex items-center gap-1">
+            <Scale className="w-2.5 h-2.5 text-[#10D6A0]" />
+            Fairness
+          </span>
+          <span className="text-[#10D6A0] font-bold text-xs">
+            {stats.fairnessIndex.toFixed(2)}
           </span>
         </div>
       </div>
